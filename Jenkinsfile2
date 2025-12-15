@@ -31,9 +31,12 @@ pipeline {
                 //sh "gradle clean build"
                 //sh "mvn clean deploy"
 
-               sh "mvn clean"
-               sh "mvn dependency:purge-local-repository"
-               sh "mvn install"
+               //sh "mvn clean"
+               //sh "mvn dependency:purge-local-repository"
+               //sh "mvn install"
+
+	       sh "mvn clean install -U"
+
             }
         }
 
