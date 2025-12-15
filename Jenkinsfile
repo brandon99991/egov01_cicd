@@ -17,14 +17,14 @@ pipeline {
     }
     
     stages {
-        stage('소스파일 체크아웃') {
+        stage('Source CheckOut') {
             steps {
                 // 소스코드를 가져올 Github 주소
                 git branch: 'main', url: 'https://github.com/brandon99991/egov01.git'
             }
         }
 
-        stage('소스 빌드') {
+        stage('Source Build') {
             steps {
                 // 755권한 필요 (윈도우에서 Git으로 소스 업로드시 권한은 644)
                 //sh "chmod +x ./gradlew"
@@ -33,7 +33,7 @@ pipeline {
             }
         }
 
-        stage('릴리즈파일 체크아웃') {
+        stage('Release File CheckOut') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']],
                     extensions: [[$class: 'SparseCheckoutPaths',
