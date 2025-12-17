@@ -58,7 +58,7 @@ pipeline {
                                             export JAVA_HOME=/home/user01/jdk/jdk1.8.0_77
                                             export PATH=$JAVA_HOME/bin:$PATH
                                             /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/shutdown.sh
-                                            sleep 3
+                                            sleep 10
                                             /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh
                                         '
                                     ''',
