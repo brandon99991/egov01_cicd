@@ -42,5 +42,29 @@ pipeline {
             }
         }
 
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                    sshPublisher(publishers: [
+                        sshPublisherDesc(
+                            configName: 'wsl-ssh',
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: 'target/*.war',
+                                    remoteDirectory: 'webapps',
+                                    flatten: true,
+                                    execCommand: '''
+                                        touch /home/user01/tomcat.home/apache-tomcat-9.0.65/aaa.txt
+                                    ''',
+                                    execTimeout: 30000
+                                )
+                            ],
+                            verbose: true
+                        )
+                    ])
+                }
+            }
+        }
+
     }
 }
