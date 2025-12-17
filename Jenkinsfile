@@ -54,7 +54,7 @@ pipeline {
                                     remoteDirectory: 'webapps',
                                     flatten: true,
                                     execCommand: '''
-                                        touch /home/user01/tomcat.home/apache-tomcat-9.0.65/aaa.txt
+                                        /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh
                                     ''',
                                     execTimeout: 30000
                                 )
