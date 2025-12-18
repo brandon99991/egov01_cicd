@@ -17,6 +17,7 @@ pipeline {
     }
     
     stages {
+        // Source CheckOut
         stage('Source CheckOut') {
             steps {
                 // 소스코드를 가져올 Github 주소
@@ -24,6 +25,7 @@ pipeline {
             }
         }
 
+        // Source Build
         stage('Source Build') {
             steps {
                 // 755권한 필요 (윈도우에서 Git으로 소스 업로드시 권한은 644)
@@ -33,6 +35,7 @@ pipeline {
             }
         }
 
+        // Release File CheckOut
         stage('Release File CheckOut') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']],
@@ -42,6 +45,7 @@ pipeline {
             }
         }
 
+        // Deploy to Tomcat
         stage('Deploy to Tomcat') {
             steps {
                 script {
@@ -71,6 +75,23 @@ pipeline {
                 }
             }
         }
+
+        // Restart to Tomcat
+        stage('Restart to Tomcat') {
+            agent { label 'wsl-jenkins' }
+            options { skipDefaultCheckout(true) }
+            steps {
+                script {
+                    sh "JENKINS_NODE_COOKIE=dontKillMe && sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/shutdown.sh"
+                    sh "sleep 3"
+                    sh "JENKINS_NODE_COOKIE=dontKillMe && nohup sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh &"
+                    sh "sleep 3"
+                }
+            }
+        }
+
+
+
 
     }
 }
