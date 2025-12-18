@@ -1,10 +1,11 @@
 pipeline {
-    agent any
+    //agent any
+    agent { label 'master-jenkins' }
 
     tools {
         //gradle 'gradle-7.6.1'
-        maven 'Maven3.9.8'
-        jdk 'openjdk11.0.16.1'
+        maven 'Maven3.9.9'
+        jdk 'JDK8'
     }
 
     environment {
@@ -17,6 +18,7 @@ pipeline {
     }
     
     stages {
+        // Source CheckOut
         stage('Source CheckOut') {
             steps {
                 // 소스코드를 가져올 Github 주소
@@ -24,27 +26,64 @@ pipeline {
             }
         }
 
+        // Source Build
         stage('Source Build') {
             steps {
                 // 755권한 필요 (윈도우에서 Git으로 소스 업로드시 권한은 644)
-                //sh "chmod +x ./gradlew"
-                //sh "gradle clean build"
-                //sh "mvn clean deploy"
-
-               //sh "mvn clean"
-               //sh "mvn dependency:purge-local-repository"
-               sh "mvn install"
+                //sh "chmod +x ./gradlew"      // Linux
+                //sh "gradle clean build"      // Linux
+                bat "mvn clean deploy"         // Windows
             }
         }
 
-        stage('Release File CheckOut') {
+        // // Release File CheckOut
+        //stage('Release File CheckOut') {
+        //    steps {
+        //        checkout scmGit(branches: [[name: '*/main']],
+        //            extensions: [[$class: 'SparseCheckoutPaths',
+        //            sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
+		//			userRemoteConfigs: [[url: "${GITHUB_URL}"]])
+        //    }
+        //}
+
+        // WAR Transer to Tomcat
+        stage('WAR Transer to Tomcat') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']],
-                    extensions: [[$class: 'SparseCheckoutPaths',
-                    sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
-					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
+                script {
+                    sshPublisher(publishers: [
+                        sshPublisherDesc(
+                            configName: 'wsl-ssh',
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: 'target/*.war',
+                                    remoteDirectory: 'webapps',
+                                    flatten: true,
+                                    execTimeout: 30000
+                                )
+                            ],
+                            verbose: true
+                        )
+                    ])
+                }
             }
         }
+
+        // Restart to Tomcat
+        stage('Restart to Tomcat') {
+            agent { label 'wsl-jenkins' }
+            options { skipDefaultCheckout(true) }
+            steps {
+                script {
+                    sh "export JAVA_HOME=/home/user01/jdk/jdk1.8.0_77 && JENKINS_NODE_COOKIE=dontKillMe && sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/shutdown.sh"
+                    sh "sleep 3"
+                    sh "export JAVA_HOME=/home/user01/jdk/jdk1.8.0_77 && JENKINS_NODE_COOKIE=dontKillMe && nohup sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh &"
+                    sh "sleep 3"
+                }
+            }
+        }
+
+
+
 
     }
 }

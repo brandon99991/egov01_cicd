@@ -1,8 +1,6 @@
 pipeline {
-    //agent any
-    agent { label 'master-jenkins' }
-
-
+    agent any
+    // agent { label 'master-jenkins' }
 
     tools {
         //gradle 'gradle-7.6.1'
@@ -38,18 +36,17 @@ pipeline {
             }
         }
 
-        // Release File CheckOut
-        stage('Release File CheckOut') {
-            steps {
-                checkout scmGit(branches: [[name: '*/main']],
-                    extensions: [[$class: 'SparseCheckoutPaths',
-                    sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
-					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
-            }
-        }
+        // //Release File CheckOut
+        //stage('Release File CheckOut') {
+        //    steps {
+        //        checkout scmGit(branches: [[name: '*/main']],
+        //            extensions: [[$class: 'SparseCheckoutPaths',
+        //            sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
+		//			userRemoteConfigs: [[url: "${GITHUB_URL}"]])
+        //    }
+        //}
 
         // Deploy to Tomcat
-        /*
         stage('Deploy to Tomcat') {
             steps {
                 script {
@@ -79,54 +76,8 @@ pipeline {
                 }
             }
         }
-        */
-
-        // WAR Transer to Tomcat
-        stage('WAR Transer to Tomcat') {
-            steps {
-                script {
-                    sshPublisher(publishers: [
-                        sshPublisherDesc(
-                            configName: 'wsl-ssh',
-                            transfers: [
-                                sshTransfer(
-                                    sourceFiles: 'target/*.war',
-                                    remoteDirectory: 'webapps',
-                                    flatten: true,
-                                    //execCommand: '''
-                                    //    /bin/bash -lc '
-                                    //        export JAVA_HOME="/home/user01/jdk/jdk1.8.0_77"
-                                    //        export PATH="$JAVA_HOME/bin:$PATH"
-                                    //        "/home/user01/tomcat.home/apache-tomcat-9.0.65/bin/shutdown.sh" || true
-                                    //        sleep 5
-                                    //        "/home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh"
-                                    //    '
-                                    //''',
-                                    execTimeout: 30000
-                                )
-                            ],
-                            verbose: true
-                        )
-                    ])
-                }
-            }
-        }
-
-        // Restart to Tomcat
-        stage('Restart to Tomcat') {
-            agent { label 'wsl-jenkins' }
-            options { skipDefaultCheckout(true) }
-            steps {
-                script {
-                    sh "export JAVA_HOME=/home/user01/jdk/jdk1.8.0_77 && JENKINS_NODE_COOKIE=dontKillMe && sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/shutdown.sh"
-                    sh "sleep 3"
-                    sh "export JAVA_HOME=/home/user01/jdk/jdk1.8.0_77 && JENKINS_NODE_COOKIE=dontKillMe && nohup sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh &"
-                    sh "sleep 3"
-                }
-            }
-        }
-
-
+ 
+ 
 
 
     }
