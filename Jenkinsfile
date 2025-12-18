@@ -87,9 +87,9 @@ pipeline {
             options { skipDefaultCheckout(true) }
             steps {
                 script {
-                    sh "JENKINS_NODE_COOKIE=dontKillMe && sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/shutdown.sh"
+                    sh "export JAVA_HOME=/home/user01/jdk/jdk1.8.0_77 && JENKINS_NODE_COOKIE=dontKillMe && sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/shutdown.sh"
                     sh "sleep 3"
-                    sh "JENKINS_NODE_COOKIE=dontKillMe && nohup sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh &"
+                    sh "export JAVA_HOME=/home/user01/jdk/jdk1.8.0_77 && JENKINS_NODE_COOKIE=dontKillMe && nohup sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh &"
                     sh "sleep 3"
                 }
             }
