@@ -1,5 +1,8 @@
 pipeline {
-    agent any
+    //agent any
+    agent { label 'master-jenkins' }
+
+
 
     tools {
         //gradle 'gradle-7.6.1'
@@ -46,6 +49,7 @@ pipeline {
         }
 
         // Deploy to Tomcat
+        /*
         stage('Deploy to Tomcat') {
             steps {
                 script {
@@ -75,6 +79,7 @@ pipeline {
                 }
             }
         }
+        */
 
         // Restart to Tomcat
         stage('Restart to Tomcat') {
