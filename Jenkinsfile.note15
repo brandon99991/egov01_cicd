@@ -49,8 +49,8 @@ pipeline {
         stage('Release File CheckOut') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']],
-                    extensions: [[$class: 'SparseCheckoutPaths',
-                    sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
+                   // extensions: [[$class: 'SparseCheckoutPaths',
+                   // sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
 					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
             }
         }
