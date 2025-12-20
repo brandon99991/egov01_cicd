@@ -45,18 +45,18 @@ pipeline {
             }
         }
 
-        // //Release File CheckOut
-        //stage('Release File CheckOut') {
-        //    steps {
-        //        checkout scmGit(branches: [[name: '*/main']],
-        //            extensions: [[$class: 'SparseCheckoutPaths',
-        //            sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
-		//			userRemoteConfigs: [[url: "${GITHUB_URL}"]])
-        //    }
-        //}
+        // 도커 빌드를 위한 Dockerfile등을 가져오기 (Release File CheckOut)
+        stage('Release File CheckOut') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']],
+                    extensions: [[$class: 'SparseCheckoutPaths',
+                    sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
+					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
+            }
+        }
 
-        // Deploy to Tomcat
   /*
+        // Deploy to Tomcat
         stage('Deploy to Tomcat') {
             steps {
                 script {
