@@ -48,7 +48,7 @@ pipeline {
         }
 
         // 도커 빌드를 위한 Dockerfile등을 가져오기 (Release File CheckOut)
-        stage('Release File CheckOut') {
+        stage('egovi01_cicd CheckOut') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']],
                    // extensions: [[$class: 'SparseCheckoutPaths',
@@ -57,7 +57,7 @@ pipeline {
             }
         }
 
-        stage('컨테이너 빌드') {
+        stage('Docker Build') {
             steps {
                 // jar 파일 복사
                 sh "cp ./target/egov01-1.0.0-SNAPSHOT.war ./build/docker/egov01-1.0.0-SNAPSHOT.war"
