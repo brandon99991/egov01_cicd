@@ -19,7 +19,7 @@ pipeline {
 
     environment {
         // 본인의 username으로 하실 분은 수정해주세요.
-        //DOCKERHUB_USERNAME = 'brandon9999'
+        DOCKERHUB_USERNAME = 'brandon9999'
         GITHUB_URL = 'https://github.com/brandon99991/egov01_cicd.git'
 
         // 실습 넘버링
@@ -56,6 +56,7 @@ pipeline {
             }
         }
 
+/*
         stage('컨테이너 빌드') {
             steps {
                 // jar 파일 복사
@@ -65,6 +66,7 @@ pipeline {
                 sh "docker build -t ${DOCKERHUB_USERNAME}/egov01:v1.0.0 ./build/docker"
             }
         }
+*/
 
 /*
         // Deploy to Tomcat
