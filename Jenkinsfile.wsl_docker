@@ -46,20 +46,27 @@ pipeline {
             }
         }
 
-        // //Release File CheckOut
-        //stage('Release File CheckOut') {
-        //    steps {
-        //        checkout scmGit(branches: [[name: '*/main']],
-        //            extensions: [[$class: 'SparseCheckoutPaths',
-        //            sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
-		//			userRemoteConfigs: [[url: "${GITHUB_URL}"]])
-        //    }
-        //}
+        // 도커 빌드를 위한 Dockerfile등을 가져오기 (Release File CheckOut)
+        stage('Release File CheckOut') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']],
+                   // extensions: [[$class: 'SparseCheckoutPaths',
+                   // sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
+					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
+            }
+        }
 
+        stage('컨테이너 빌드') {
+            steps {
+                // jar 파일 복사
+                sh "cp ./target/egov01-1.0.0-SNAPSHOT.war ./build/docker/egov01-1.0.0-SNAPSHOT.war"
 
-//   export JAVA_HOME='/home/user01/jdk/jdk1.8.0_77'
-//   export CATALINA_HOME='/home/user01/tomcat.home/apache-tomcat-9.0.65'
+                // 도커 빌드
+                sh "docker build -t ${DOCKERHUB_USERNAME}/egov01:v1.0.0 ./build/docker"
+            }
+        }
 
+/*
         // Deploy to Tomcat
         stage('Deploy to Tomcat') {
             steps {
@@ -90,7 +97,7 @@ pipeline {
                 }
             }
         }
- 
+ */
  
 
 
