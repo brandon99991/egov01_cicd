@@ -56,6 +56,10 @@ pipeline {
         //    }
         //}
 
+
+//   export JAVA_HOME='/home/user01/jdk/jdk1.8.0_77'
+//   export CATALINA_HOME='/home/user01/tomcat.home/apache-tomcat-9.0.65'
+
         // Deploy to Tomcat
         stage('Deploy to Tomcat') {
             steps {
@@ -76,25 +80,26 @@ export CATALINA_HOME='/home/user01/tomcat.home/apache-tomcat-9.0.65'
 export PATH="\\$JAVA_HOME/bin:\\$PATH"
 
 echo "[1] Stop Tomcat"
-\\$CATALINA_HOME/bin/catalina.sh stop || true
+\$CATALINA_HOME/bin/catalina.sh stop || true
 
 # 최대 20초 대기 (프로세스가 내려갈 때까지)
-for i in \\$(seq 1 20); do
+for i in \$(seq 1 20); do
   pgrep -f 'org.apache.catalina.startup.Bootstrap' >/dev/null || break
   sleep 1
 done
 
 echo "[2] Clean exploded app (optional)"
 # 필요 시 기존 풀린 디렉토리 삭제 (앱명에 맞게 수정)
-# rm -rf \\$CATALINA_HOME/webapps/YOUR_APP_DIR
-# rm -rf \\$CATALINA_HOME/work/Catalina/localhost/YOUR_APP_DIR
+# rm -rf \$CATALINA_HOME/webapps/YOUR_APP_DIR
+# rm -rf \$CATALINA_HOME/work/Catalina/localhost/YOUR_APP_DIR
 
 echo "[3] Start Tomcat"
-\\$CATALINA_HOME/bin/catalina.sh start
+\$CATALINA_HOME/bin/catalina.sh start
 
 echo "[4] Tail log (optional)"
-tail -n 50 \\$CATALINA_HOME/logs/catalina.out || true
-""",
+tail -n 50 \$CATALINA_HOME/logs/catalina.out || true
+"""
+,
                                     execTimeout: 30000
                                 )
                             ],
