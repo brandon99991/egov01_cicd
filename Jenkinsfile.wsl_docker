@@ -67,7 +67,7 @@ pipeline {
             }
         }
 
-        stage('dockerhub push'){
+        stage('DockerHub Push'){
             steps{
                 // echo pass --> using pipes we are gonna provide it is a input to a cmd
                 sh 'echo $dockerhub_cred_PSW | docker login -u $dockerhub_cred_USR --password-stdin'
