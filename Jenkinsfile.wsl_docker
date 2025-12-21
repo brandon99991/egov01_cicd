@@ -19,6 +19,7 @@ pipeline {
 
     environment {
         // 본인의 username으로 하실 분은 수정해주세요.
+        dockerhub_cred = credentials('docker-cred')
         DOCKERHUB_USERNAME = 'brandon9999'
         GITHUB_URL = 'https://github.com/brandon99991/egov01_cicd.git'
 
@@ -65,6 +66,21 @@ pipeline {
                 sh "docker build -t ${DOCKERHUB_USERNAME}/egov01:v1.0.0 ./build/docker"
             }
         }
+
+        stage('dockerhub push'){
+            steps{
+                // echo pass --> using pipes we are gonna provide it is a input to a cmd
+                sh 'echo $dockerhub_cred_PSW | docker login -u $dockerhub_cred_USR --password-stdin'
+                sh 'docker push brandon9999/egov01:v1.0.0'
+            }
+        }
+
+        //stage('docekr run'){
+        //    steps{
+        //        sh 'docker run -d -p 80:8080 --name add brandon9999/addressbook:1.0'
+        //    }
+        //}
+
 
 /*
         // Deploy to Tomcat
