@@ -1,12 +1,3 @@
-/* *****
- Jenkinsfile ?„ ?ƒ
-   1) Jenkinsfile
-       -> Publish over SSHë¡? WAS? „?†¡ ë°? Tomcat ?¬ê¸°ë™
-   2) Jenkinsfile2
-       -> Publish over SSHë¡? WAS? „?†¡ 
-       -> ?›ê²? ?  ?‚¨?Š¤ë¡? Tomcat ?¬ê¸°ë™
-*/
-
 pipeline {
     agent any
     // agent { label 'master-jenkins' }
@@ -18,11 +9,9 @@ pipeline {
     }
 
     environment {
-        // ë³¸ì¸?˜ username?œ¼ë¡? ?•˜?‹¤ ë¶„ì?? ?ˆ˜? •?•´ì£¼ì„¸?š”.
         //DOCKERHUB_USERNAME = 'brandon9999'
         GITHUB_URL = 'https://github.com/brandon99991/egov01_cicd.git'
 
-        // ?‹¤?Šµ ?„˜ë²„ë§
         CLASS_NUM = '2212'
     }
     
@@ -30,7 +19,6 @@ pipeline {
         // Source CheckOut
         stage('Source CheckOut') {
             steps {
-                // ?†Œ?Š¤ì½”ë“œë¥? ê°?? ¸?˜¬ Github ì£¼ì†Œ
                 git branch: 'main', url: 'https://github.com/brandon99991/egov01.git'
             }
         }
@@ -38,22 +26,21 @@ pipeline {
         // Source Build
         stage('Source Build') {
             steps {
-                // 755ê¶Œí•œ ?•„?š” (?œˆ?„?š°?—?„œ Git?œ¼ë¡? ?†Œ?Š¤ ?—…ë¡œë“œ?‹œ ê¶Œí•œ??? 644)
                 //sh "chmod +x ./gradlew"
                 //sh "gradle clean build"
                 bat "mvn clean deploy"
             }
         }
 
-         //Release File CheckOut
-        stage('Release File CheckOut') {
-            steps {
-                checkout scmGit(branches: [[name: '*/main']],
-                    extensions: [[$class: 'SparseCheckoutPaths',
-                    sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
-					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
-            }
-        }
+        //Release File CheckOut         
+        //stage('Release File CheckOut') {
+        //    steps {
+        //        checkout scmGit(branches: [[name: '*/main']],
+        //           extensions: [[$class: 'SparseCheckoutPaths',
+        //            sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
+		//			userRemoteConfigs: [[url: "${GITHUB_URL}"]])
+        //    }
+        //}
 
         // Deploy to Tomcat
         stage('Deploy to Tomcat') {
@@ -86,9 +73,6 @@ pipeline {
             }
         }
  
- 
-
-
     }
 
 }
