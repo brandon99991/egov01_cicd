@@ -1,10 +1,10 @@
 /* *****
- Jenkinsfile ì„ íƒ
+ Jenkinsfile ?„ ?ƒ
    1) Jenkinsfile
-       -> Publish over SSHë¡œ WASì „ì†¡ ë° Tomcat ì¬ê¸°ë™
+       -> Publish over SSHë¡? WAS? „?†¡ ë°? Tomcat ?¬ê¸°ë™
    2) Jenkinsfile2
-       -> Publish over SSHë¡œ WASì „ì†¡ 
-       -> ì›ê²© ì  í‚¨ìŠ¤ë¡œ Tomcat ì¬ê¸°ë™
+       -> Publish over SSHë¡? WAS? „?†¡ 
+       -> ?›ê²? ?  ?‚¨?Š¤ë¡? Tomcat ?¬ê¸°ë™
 */
 
 pipeline {
@@ -18,11 +18,11 @@ pipeline {
     }
 
     environment {
-        // ë³¸ì¸ì˜ usernameìœ¼ë¡œ í•˜ì‹¤ ë¶„ì€ ìˆ˜ì •í•´ì£¼ì„¸ìš”.
+        // ë³¸ì¸?˜ username?œ¼ë¡? ?•˜?‹¤ ë¶„ì?? ?ˆ˜? •?•´ì£¼ì„¸?š”.
         //DOCKERHUB_USERNAME = 'brandon9999'
         GITHUB_URL = 'https://github.com/brandon99991/egov01_cicd.git'
 
-        // ì‹¤ìŠµ ë„˜ë²„ë§
+        // ?‹¤?Šµ ?„˜ë²„ë§
         CLASS_NUM = '2212'
     }
     
@@ -30,7 +30,7 @@ pipeline {
         // Source CheckOut
         stage('Source CheckOut') {
             steps {
-                // ì†ŒìŠ¤ì½”ë“œë¥¼ ê°€ì ¸ì˜¬ Github ì£¼ì†Œ
+                // ?†Œ?Š¤ì½”ë“œë¥? ê°?? ¸?˜¬ Github ì£¼ì†Œ
                 git branch: 'main', url: 'https://github.com/brandon99991/egov01.git'
             }
         }
@@ -38,7 +38,7 @@ pipeline {
         // Source Build
         stage('Source Build') {
             steps {
-                // 755ê¶Œí•œ í•„ìš” (ìœˆë„ìš°ì—ì„œ Gitìœ¼ë¡œ ì†ŒìŠ¤ ì—…ë¡œë“œì‹œ ê¶Œí•œì€ 644)
+                // 755ê¶Œí•œ ?•„?š” (?œˆ?„?š°?—?„œ Git?œ¼ë¡? ?†Œ?Š¤ ?—…ë¡œë“œ?‹œ ê¶Œí•œ??? 644)
                 //sh "chmod +x ./gradlew"
                 //sh "gradle clean build"
                 bat "mvn clean deploy"
