@@ -75,6 +75,14 @@ pipeline {
             }
         }
 
+        stage('Kubernetes(rocky) Deploy') {
+            steps {
+                // K8S deploy
+                sh "kubectl apply -f ./deploy/k8s/egov01_deploy.yaml"
+                sh "kubectl apply -f ./deploy/k8s/egov01_svc.yaml"
+            }
+        }
+
         //stage('docekr run'){
         //    steps{
         //        sh 'docker run -d -p 80:8080 --name add brandon9999/egov01:v1.0.0'
