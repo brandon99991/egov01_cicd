@@ -45,15 +45,15 @@ pipeline {
             }
         }
 
-        // //Release File CheckOut
-        //stage('Release File CheckOut') {
-        //    steps {
-        //        checkout scmGit(branches: [[name: '*/main']],
-        //            extensions: [[$class: 'SparseCheckoutPaths',
-        //            sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
-		//			userRemoteConfigs: [[url: "${GITHUB_URL}"]])
-        //    }
-        //}
+         //Release File CheckOut
+        stage('Release File CheckOut') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']],
+                    extensions: [[$class: 'SparseCheckoutPaths',
+                    sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
+					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
+            }
+        }
 
         // Deploy to Tomcat
         stage('Deploy to Tomcat') {
