@@ -1,4 +1,4 @@
-/*
+/* ***
  Jenkinsfile 선택
    1) Jenkinsfile
        -> Publish over SSH로 WAS전송 및 Tomcat 재기동
@@ -90,4 +90,5 @@ pipeline {
 
 
     }
+
 }
