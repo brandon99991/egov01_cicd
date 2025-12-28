@@ -43,7 +43,7 @@ pipeline {
                 //sh "chmod +x ./gradlew"
                 //sh "gradle clean build"
                 //bat "mvn clean deploy" // 윈도우용
-                sh "mvn clean deploy"    // 리눅스용
+                sh "mvn -f pom-repo_docker.xml clean deploy"    // 리눅스용
             }
         }
 
