@@ -25,6 +25,8 @@ pipeline {
 
         // 실습 넘버링
         CLASS_NUM = '2212'
+
+        KUBECONFIG = '/home/user01/.kube.rocky/config'        
     }
     
     stages {
@@ -77,6 +79,10 @@ pipeline {
 
         stage('Kubernetes(rocky) Deploy') {
             steps {
+                sh "pwd"
+                echo "KUBECONFIG=$KUBECONFIG"
+                sh "kubectl config view --minify"
+
                 // K8S deploy
                 sh "kubectl apply -f ./cicd-wsl_docker/deploy/k8s/egov01_deploy.yaml"
                 sh "kubectl apply -f ./cicd-wsl_docker/deploy/k8s/egov01_svc.yaml"
