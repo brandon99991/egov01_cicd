@@ -23,7 +23,7 @@ pipeline {
             steps {
 
                 //echo "KUBECONFIG=$KUBECONFIG"
-                //kubectl config view --minify | egrep -n "server:|current-context"
+                sh "kubectl config view --minify"
                 //kubectl cluster-info
 
                 // K8S deploy
