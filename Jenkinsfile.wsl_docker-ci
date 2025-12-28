@@ -1,0 +1,129 @@
+/*
+ Jenkinsfile 선택
+   1) Jenkinsfile
+       -> Publish over SSH로 WAS전송 및 Tomcat 재기동
+   2) Jenkinsfile2
+       -> Publish over SSH로 WAS전송 
+       -> 원격 젠킨스로 Tomcat 재기동
+*/
+
+pipeline {
+    agent any
+    // agent { label 'master-jenkins' }
+
+    tools {
+        //gradle 'gradle-7.6.1'
+        maven 'Maven3.9.9'
+        jdk 'JDK8'
+    }
+
+    environment {
+        // 본인의 username으로 하실 분은 수정해주세요.
+        dockerhub_cred = credentials('docker-cred')
+        DOCKERHUB_USERNAME = 'brandon9999'
+        GITHUB_URL = 'https://github.com/brandon99991/egov01_cicd.git'
+
+        // 실습 넘버링
+        CLASS_NUM = '2212'
+    }
+    
+    stages {
+        // Source CheckOut
+        stage('Source CheckOut') {
+            steps {
+                // 소스코드를 가져올 Github 주소
+                git branch: 'main', url: 'https://github.com/brandon99991/egov01.git'
+            }
+        }
+
+        // Source Build
+        stage('Source Build') {
+            steps {
+                // 755권한 필요 (윈도우에서 Git으로 소스 업로드시 권한은 644)
+                //sh "chmod +x ./gradlew"
+                //sh "gradle clean build"
+                //bat "mvn clean deploy" // 윈도우용
+                sh "mvn -f pom-repo_docker.xml clean deploy"    // 리눅스용
+            }
+        }
+
+        // 도커 빌드를 위한 Dockerfile등을 가져오기 (Release File CheckOut)
+        stage('egovi01_cicd CheckOut') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']],
+                   // extensions: [[$class: 'SparseCheckoutPaths',
+                   // sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
+					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                // jar 파일 복사
+                sh "cp ./target/egov01-1.0.0-SNAPSHOT.war ./cicd-wsl_docker/build/docker/egov01-1.0.0-SNAPSHOT.war"
+
+                // 도커 빌드
+                sh "docker build -t ${DOCKERHUB_USERNAME}/egov01:v1.0.0 ./cicd-wsl_docker/build/docker"
+            }
+        }
+
+        stage('DockerHub Push'){
+            steps{
+                // echo pass --> using pipes we are gonna provide it is a input to a cmd
+                sh 'echo $dockerhub_cred_PSW | docker login -u $dockerhub_cred_USR --password-stdin'
+                sh 'docker push brandon9999/egov01:v1.0.0'
+            }
+        }
+
+        //stage('Kubernetes(rocky) Deploy') {
+        //    steps {
+        //        // K8S deploy
+        //        sh "kubectl apply -f ./cicd-wsl_docker/deploy/k8s/egov01_deploy.yaml"
+        //        sh "kubectl apply -f ./cicd-wsl_docker/deploy/k8s/egov01_svc.yaml"
+        //    }
+        //}
+
+        //stage('docekr run'){
+        //    steps{
+        //        sh 'docker run -d -p 80:8080 --name add brandon9999/egov01:v1.0.0'
+        //    }
+        //}
+
+
+/*
+        // Deploy to Tomcat
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                    sshPublisher(publishers: [
+                        sshPublisherDesc(
+                            configName: 'wsl-ssh',
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: 'target/*.war',
+                                    remoteDirectory: 'webapps',
+                                    flatten: true,
+                                    execCommand: '''
+                                        /bin/bash -lc '
+                                            export JAVA_HOME="/home/user01/jdk/jdk1.8.0_77"
+                                            export PATH="$JAVA_HOME/bin:$PATH"
+                                            "/home/user01/tomcat.home/apache-tomcat-9.0.65/bin/shutdown.sh" || true
+                                            sleep 5
+                                            "/home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh"
+                                        '
+                                    ''',    
+                                    execTimeout: 30000
+                                )
+                            ],
+                            verbose: true
+                        )
+                    ])
+                }
+            }
+        }
+ */
+ 
+
+
+    }
+}
