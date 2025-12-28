@@ -1,5 +1,15 @@
+/*
+ Jenkinsfile 선택
+   1) Jenkinsfile
+       -> Publish over SSH로 WAS전송 및 Tomcat 재기동
+   2) Jenkinsfile2
+       -> Publish over SSH로 WAS전송 
+       -> 원격 젠킨스로 Tomcat 재기동
+*/
+
 pipeline {
     agent any
+    // 젠킨스 원격 노드에서 실행할때
     // agent { label 'master-jenkins' }
 
     tools {
@@ -41,6 +51,46 @@ pipeline {
 		//			userRemoteConfigs: [[url: "${GITHUB_URL}"]])
         //    }
         //}
+
+
+
+
+        // WAR Transer to Tomcat
+        //stage('WAR Transer to Tomcat') {
+        //    steps {
+        //        script {
+        //            sshPublisher(publishers: [
+        //                sshPublisherDesc(
+        //                    configName: 'wsl-ssh',
+        //                    transfers: [
+        //                        sshTransfer(
+        //                            sourceFiles: 'target/*.war',
+        //                            remoteDirectory: 'webapps',
+        //                            flatten: true,
+        //                            execTimeout: 30000
+        //                        )
+        //                    ],
+        //                    verbose: true
+        //                )
+        //            ])
+        //        }
+        //    }
+        //}
+
+        // Restart to Tomcat
+        //stage('Restart to Tomcat') {
+        //    agent { label 'wsl-jenkins' }
+        //    options { skipDefaultCheckout(true) }
+        //    steps {
+        //        script {
+        //            sh "export JAVA_HOME=/home/user01/jdk/jdk1.8.0_77 && JENKINS_NODE_COOKIE=dontKillMe && sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/shutdown.sh"
+        //            sh "sleep 3"
+        //            sh "export JAVA_HOME=/home/user01/jdk/jdk1.8.0_77 && JENKINS_NODE_COOKIE=dontKillMe && nohup sh /home/user01/tomcat.home/apache-tomcat-9.0.65/bin/startup.sh &"
+        //            sh "sleep 3"
+        //        }
+        //    }
+        //}
+
 
         // Deploy to Tomcat
         stage('Deploy to Tomcat') {
