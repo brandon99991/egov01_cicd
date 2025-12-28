@@ -63,7 +63,7 @@ pipeline {
                 sh "cp ./target/egov01-1.0.0-SNAPSHOT.war ./cicd-wsl_docker/build/docker/egov01-1.0.0-SNAPSHOT.war"
 
                 // 도커 빌드
-                sh "docker build -t ${DOCKERHUB_USERNAME}/egov01:v1.0.0 ./build/docker"
+                sh "docker build -t ${DOCKERHUB_USERNAME}/egov01:v1.0.0 ./cicd-wsl_docker/build/docker"
             }
         }
 
