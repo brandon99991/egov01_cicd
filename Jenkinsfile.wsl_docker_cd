@@ -25,7 +25,7 @@ pipeline {
             steps {
 
                 //set -e
-                //echo "KUBECONFIG=$KUBECONFIG"
+                echo "KUBECONFIG=$KUBECONFIG"
                 sh "kubectl config view --minify"
 
                 // K8S deploy
