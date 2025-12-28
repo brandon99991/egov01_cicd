@@ -26,7 +26,7 @@ pipeline {
 
                 //set -e
                 echo "KUBECONFIG=$KUBECONFIG"
-                sh "cat $KUBECONFIG"
+                sh "pwd"
                 sh "kubectl config view --minify"
 
                 // K8S deploy
