@@ -24,8 +24,8 @@ pipeline {
         stage('Kubernetes(rocky) Deploy') {
             steps {
 
-                set -e
-                echo "KUBECONFIG=$KUBECONFIG"
+                //set -e
+                //echo "KUBECONFIG=$KUBECONFIG"
                 sh "kubectl config view --minify"
 
                 // K8S deploy
