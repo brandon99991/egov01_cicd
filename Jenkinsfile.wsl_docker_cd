@@ -17,15 +17,26 @@ pipeline {
         // 실습 넘버링
         CLASS_NUM = '2212'
 
-        KUBECONFIG = '/home/user01/.kube.rocky/config'
+        //KUBECONFIG = '/home/user01/.kube.rocky/config'
     }
 
     stages {
+        // 도커 빌드를 위한 Dockerfile등을 가져오기 (Release File CheckOut)
+        stage('egovi01_cicd CheckOut') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']],
+                   // extensions: [[$class: 'SparseCheckoutPaths',
+                   // sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
+					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
+            }
+        }
+
+
         stage('Kubernetes(rocky) Deploy') {
             steps {
 
                 sh "pwd"
-                echo "KUBECONFIG=$KUBECONFIG"
+                //echo "KUBECONFIG=$KUBECONFIG"
                 sh "kubectl config view --minify"
 
                 // K8S deploy
