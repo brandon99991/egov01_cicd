@@ -17,7 +17,7 @@ pipeline {
         // 실습 넘버링
         CLASS_NUM = '2212'
 
-        KUBECONFIG = '/var/jenkins_home/.kube/config'
+        KUBECONFIG = '/home/user01/.kube.rocky/config'
     }
 
     stages {
@@ -25,8 +25,8 @@ pipeline {
             steps {
 
                 //set -e
-                echo "KUBECONFIG=$KUBECONFIG"
                 sh "pwd"
+                echo "KUBECONFIG=$KUBECONFIG"
                 sh "kubectl config view --minify"
 
                 // K8S deploy
