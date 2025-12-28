@@ -22,7 +22,7 @@ pipeline {
         stage('Kubernetes(rocky) Deploy') {
             steps {
 
-                echo "KUBECONFIG=$KUBECONFIG"
+                //echo "KUBECONFIG=$KUBECONFIG"
                 //kubectl config view --minify | egrep -n "server:|current-context"
                 //kubectl cluster-info
 
@@ -32,4 +32,6 @@ pipeline {
             }
         }
     }
+
+
 }
