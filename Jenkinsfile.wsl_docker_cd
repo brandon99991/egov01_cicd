@@ -21,16 +21,6 @@ pipeline {
     }
 
     stages {
-        // 도커 빌드를 위한 Dockerfile등을 가져오기 (Release File CheckOut)
-        stage('egovi01_cicd CheckOut') {
-            steps {
-                checkout scmGit(branches: [[name: '*/main']],
-                   // extensions: [[$class: 'SparseCheckoutPaths',
-                   // sparseCheckoutPaths: [[path: "/${CLASS_NUM}"]]]],
-					userRemoteConfigs: [[url: "${GITHUB_URL}"]])
-            }
-        }
-
 
         stage('Kubernetes(rocky) Deploy') {
             steps {

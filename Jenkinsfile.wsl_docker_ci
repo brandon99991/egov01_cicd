@@ -1,12 +1,3 @@
-/*
- Jenkinsfile 선택
-   1) Jenkinsfile
-       -> Publish over SSH로 WAS전송 및 Tomcat 재기동
-   2) Jenkinsfile2
-       -> Publish over SSH로 WAS전송 
-       -> 원격 젠킨스로 Tomcat 재기동
-*/
-
 pipeline {
     agent any
     // agent { label 'master-jenkins' }
