@@ -1,6 +1,6 @@
 pipeline {
-    agent any
-    // agent { label 'master-jenkins' }
+    //agent any
+    agent { label 'master-jenkins' }
 
     tools {
         //gradle 'gradle-7.6.1'
