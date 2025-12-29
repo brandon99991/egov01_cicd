@@ -46,7 +46,8 @@ pipeline {
         // Source CheckOut
         stage('Source CheckOut') {
             steps {
-                git branch: 'main', url: "${env.GITHUB_SOURCE_URL}"      // Source 파일 저장소
+                //git branch: 'main', url: "${env.GITHUB_SOURCE_URL}"      // Source 파일 저장소
+                git branch: 'main', url: 'https://github.com/brandon99991/egov01.git'      // Source 파일 저장소
             }
         }
 
