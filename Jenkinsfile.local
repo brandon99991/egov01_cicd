@@ -18,18 +18,35 @@ pipeline {
         jdk 'JDK8'
     }
 
+    options {
+        buildDiscarder(
+            logRotator(
+                numToKeepStr: '10',          // 빌드 로그를 10개까지만 보관
+                artifactNumToKeepStr: '5'    // 산출물(artifact)을 5개까지만 보관
+            )
+        )
+    }
+
+    parameters {
+    choice(name: 'DEPLOY_ENV', choices: ['dev', 'prod'], description: '배포 환경 선택')
+    }
+
+
     environment {
         //DOCKERHUB_USERNAME = 'brandon9999'
         GITHUB_URL = 'https://github.com/brandon99991/egov01_cicd.git'
+        GITHUB_SOURCE_URL = 'https://github.com/brandon99991/egov01.git'
 
         CLASS_NUM = '2212'
+        SPRING_PROFILE = "${params.DEPLY_ENV}"   // local, dev, prod
+        WAR_SEND_NAME = "egov01.war"
     }
     
     stages {
         // Source CheckOut
         stage('Source CheckOut') {
             steps {
-                git branch: 'main', url: 'https://github.com/brandon99991/egov01.git'
+                git branch: 'main', url: "${GITHUB_SOURCE_URL}"      // Source 파일 저장소
             }
         }
 
@@ -42,6 +59,42 @@ pipeline {
             }
         }
 
+        // 아티팩트 보관 ( jobs/jobName/builds/빌드번호/archive/target에 보관됨)
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+            }
+        }
+
+        // Set WAR Name
+        stage('Set WAR Name') {
+            steps {
+                script {
+                def warFile = bat(
+                    script: '''
+                    for %%f in (target\\*.war) do (
+                        echo %%f
+                        goto :eof
+                    )
+                    ''',
+                    returnStdout: true
+                ).trim()
+
+                env.WAR_NAME = warFile.tokenize('\\').last()   // Artifact 이름 추출
+                echo "WAR_NAME = ${env.WAR_NAME}"
+
+                // ✅ 같은 경로에 다른 이름으로 복사본 만들기
+                bat """
+                    copy /Y "target\\${env.WAR_NAME}" "target\\${WAR_SEND_NAME}"
+                """
+                echo "Copied to target\\${WAR_SEND_NAME}"
+                }
+            }
+        }
+
+
+
+
         //Release File CheckOut         
         //stage('Release File CheckOut') {
         //    steps {
@@ -51,6 +104,40 @@ pipeline {
 		//			userRemoteConfigs: [[url: "${GITHUB_URL}"]])
         //    }
         //}
+
+
+
+
+
+        stage('🚨🚨 Confirm Deploy 🚨🚨') {
+            when {
+                expression { env.SPRING_PROFILE == 'prod' }
+            }
+            steps {
+                script {
+                try {
+                    currentBuild.description = "⏸️ PROD 배포 승인 대기중"
+
+                    input message: "운영 배포 승인 필요. 진행할까요?",
+                        ok: "🚀 승인"
+
+                    // ✅ 승인됨
+                    currentBuild.description = "✅ PROD 배포 승인 완료"
+                }
+                catch (err) {
+                    // ❌ 거절됨 (Cancel / Abort)
+                    currentBuild.description = "❌ PROD 배포 승인 거절됨"
+                    currentBuild.result = 'ABORTED'
+                    error "운영 배포가 승인되지 않았습니다."
+                }
+                }
+            }
+        }
+
+
+
+
+
 
 
 
@@ -92,16 +179,22 @@ pipeline {
         //}
 
 
+
+
         // Deploy to Tomcat
         stage('Deploy to Tomcat') {
             steps {
                 script {
+                    echo "* Artifcat Name: ${env.WAR_NAME}"
+                    echo "* Artifcat Send Name: ${env.WAR_SEND_NAME}"
+
                     sshPublisher(publishers: [
                         sshPublisherDesc(
                             configName: 'wsl-ssh',
                             transfers: [
                                 sshTransfer(
-                                    sourceFiles: 'target/*.war',
+                                    //sourceFiles: 'target/*.war',
+                                    sourceFiles: "target/${env.WAR_SEND_NAME}",
                                     remoteDirectory: 'webapps',
                                     flatten: true,
                                     execCommand: '''
