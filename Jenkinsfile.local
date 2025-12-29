@@ -46,7 +46,7 @@ pipeline {
         // Source CheckOut
         stage('Source CheckOut') {
             steps {
-                git branch: 'main', url: "${GITHUB_SOURCE_URL}"      // Source 파일 저장소
+                git branch: 'main', url: "${env.GITHUB_SOURCE_URL}"      // Source 파일 저장소
             }
         }
 
@@ -85,9 +85,9 @@ pipeline {
 
                 // ✅ 같은 경로에 다른 이름으로 복사본 만들기
                 bat """
-                    copy /Y "target\\${env.WAR_NAME}" "target\\${WAR_SEND_NAME}"
+                    copy /Y "target\\${env.WAR_NAME}" "target\\${env.WAR_SEND_NAME}"
                 """
-                echo "Copied to target\\${WAR_SEND_NAME}"
+                echo "Copied to target\\${env.WAR_SEND_NAME}"
                 }
             }
         }
